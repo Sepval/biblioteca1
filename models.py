@@ -37,3 +37,4 @@ class Prestamo(Base):
 
 engine = create_engine('sqlite:///biblioteca.db')
 Session = sessionmaker(bind=engine)
+# se hizo cambios en la consola 
