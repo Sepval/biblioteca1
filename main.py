@@ -170,12 +170,33 @@ class BibliotecaApp:
                 self.menu_usuarios()
 
         tk.Button(self.root, text="Añadir Usuario", command=agregar_usuario).pack()
-        tk.Button(self.root, text="Volver", command=self.menu_principal).pack(pady=10)
-
+        
         lista = tk.Listbox(self.root)
         for u in self.session.query(Usuario).all():
             lista.insert(tk.END, f"{u.id} - {u.nombre}")
         lista.pack()
+
+        def eliminar_usuario():
+            seleccion = lista.curselection()
+            if seleccion:
+                usuario_id = int(lista.get(seleccion).split(" - ")[0])
+                usuario = self.session.get(Usuario, usuario_id)
+                if usuario:
+                    # Verificar si el usuario tiene préstamos activos
+                    prestamos_activos = [p for p in usuario.prestamos if p.fecha_devolucion is None]
+                    if prestamos_activos:
+                        messagebox.showerror("Error", "No se puede eliminar un usuario con préstamos activos.")
+                    else:
+                        self.session.delete(usuario)
+                        self.session.commit()
+                        messagebox.showinfo("OK", "Usuario eliminado.")
+                        self.menu_usuarios()
+
+        frame_botones = tk.Frame(self.root)
+        frame_botones.pack(pady=5)
+        
+        tk.Button(frame_botones, text="Eliminar Usuario", command=eliminar_usuario).pack(side=tk.LEFT, padx=5)
+        tk.Button(frame_botones, text="Volver", command=self.menu_principal).pack(side=tk.LEFT, padx=5)
 
     def menu_prestamos(self):
         self.limpiar_ventana()
