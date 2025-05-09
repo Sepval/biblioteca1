@@ -224,8 +224,9 @@ class BibliotecaApp:
 
         lista = tk.Listbox(self.root, width=70)
         prestamos = self.session.query(Prestamo).filter_by(fecha_devolucion=None).all()
-        for p in prestamos:
-            lista.insert(tk.END, f"{p.id} - {p.libro.titulo} a {p.usuario.nombre} el {p.fecha_prestamo}")
+
+        lista.insert(tk.END, f"{p.id} - {p.libro.titulo} a {p.usuario.nombre} el {p.fecha_prestamo}")
+
         lista.pack()
 
     def ver_autores_con_libros(self):
@@ -250,3 +251,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = BibliotecaApp(root)
     root.mainloop()
+    
